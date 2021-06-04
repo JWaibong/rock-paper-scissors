@@ -49,7 +49,34 @@ function play(userInput, computerInput){
             return "Incorrect input. Please enter one of the following: rock paper scissors";        
     }
 }
-let input1 = computerInput();
-let input2 = computerInput();
-console.log(input1 + " vs " + input2);
-console.log("result: " + input1 + " " + play(input1, input2));
+function game(){
+    let score1 = 0;
+    let score2 = 0;
+    for(let i=1; i<6; i++){
+        let input1 = prompt("Round "+ i +": Input one of the following: rock paper scissors");
+        let input2 = computerInput();
+        input1 = input1.toLowerCase();
+        let result = play(input1, input2);
+        console.log(input1 + " vs " + input2);
+        console.log("result: You " + result + " Round " + i);
+        if(result == "win"){
+            score1++;
+        }
+        else if(result == "lose"){
+            score2++;
+        }
+    }
+    console.log("Your score:" + score1);
+    console.log("Opponent score:" + score2);
+    if(score1 > score2){
+        console.log("You win the game");
+    }
+    else if (score1 < score2){
+        console.log("You lose the game");
+    }
+    else{
+        console.log("Tie");
+    }
+}
+game();
+
