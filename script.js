@@ -1,24 +1,27 @@
-function computerInput(){
+function computerInput(){ // returns string for the computer's input
     const random = Math.floor(1 + Math.random()*3);
     switch(random){
         case 1:
-            return "rock";
+            return "Rock";
         case 2:
-            return "paper";
+            return "Paper";
         case 3:
-            return "scissors";
+            return "Scissors";
         default:
             return "Error";
     }
 }
-function play(userInput, computerInput){
+function play(userInput, computerInput){ // returns string
+    //compares the user's input to the computer's input to determine match winner
+    matchup.textContent = "User: " +userInput + " vs Computer: " + computerInput;
+    div.appendChild(matchup);
     userInput = userInput.toLowerCase();
-    if(userInput == computerInput){
+    if(userInput == computerInput.toLowerCase()){
         return "tie";
     }
     switch(userInput){
         case "rock":
-            if(computerInput == "paper"){
+            if(computerInput == "Paper"){
                 score2++;
                 return "lose";
             }
@@ -27,7 +30,7 @@ function play(userInput, computerInput){
                 return "win";
             } 
         case "paper":
-            if(computerInput == "scissors"){
+            if(computerInput == "Scissors"){
                 score2++;
                 return "lose";
             }
@@ -36,7 +39,7 @@ function play(userInput, computerInput){
                 return "win";
             }
         case "scissors":
-            if(computerInput == "rock"){
+            if(computerInput == "Rock"){
                 score2++;
                 return "lose";
             }
@@ -49,24 +52,59 @@ function play(userInput, computerInput){
             "Please enter one of the following: rock paper scissors";        
     }
 }
-function checkWin(scoreOne, scoreTwo){
-    if(score1 >= 5){
-        scoreTracker.textContent = "User wins";
-    }
-    else if(score2 >= 5){
-        scoreTracker.textContent = "Computer wins";
+function checkRoundWin(outcome){ //void
+    // depending on win/loss/tie of the round, 
+//change the content of the matchWinner element
+// to show the outcome of the round.
+    switch(outcome){
+        case "win":
+            matchWinner.textContent = "User wins round.";
+            div.appendChild(matchWinner);
+            break;
+        case "lose":
+            matchWinner.textContent = "User loses round.";
+            div.appendChild(matchWinner);
+            break;
+        default:
+            matchWinner.textContent = "Tie round.";
+            div.appendChild(matchWinner);
+            break;
     }
 }
+function checkWin(scoreOne, scoreTwo){ //void
+    //check if either the user or computer reached first to 5 points
+    //change the text content of the winner element if so
+    
+    if(scoreOne >= 5){
+        gameOver = true;
+        winner.textContent = "User wins. Please reset game";
+        rock.disabled = true;
+        paper.disabled = true;
+        scissors.disabled = true;
+    }
+    else if(scoreTwo >= 5){
+        gameOver = true;
+        winner.textContent = "Computer wins. Please reset game";
+        rock.disabled = true;
+        paper.disabled = true;
+        scissors.disabled = true;
+    }
+
+}
+let gameOver = false; 
 let score1 = 0;
 let score2 = 0;
 const div = document.querySelector("#container");
 let result = "";
-
+let cInput = ""
 const rock = document.createElement("button");
 rock.textContent = "Rock";
 rock.addEventListener("click", function(e){
-     result = play("Rock", computerInput());
-     scoreTracker.textContent = "User Score: " + score1 + "\n" + "Computer Score: " + score2;  
+     cInput = computerInput();
+     result = play("Rock", cInput);
+     checkRoundWin(result);
+     scoreTracker.textContent =  "User Score: " + score1 + "   "+ "Computer Score: " + score2; 
+
      checkWin(score1, score2);
 });
 
@@ -74,8 +112,11 @@ rock.addEventListener("click", function(e){
 const paper = document.createElement("button");
 paper.textContent = "Paper";
 paper.addEventListener("click", function(e){
-    result = play("Paper",computerInput());
+    cInput = computerInput();
+    result = play("Paper",cInput);
+    checkRoundWin(result);
     scoreTracker.textContent = "User Score: " + score1 + "\n" + "Computer Score: " + score2;  
+
     checkWin(score1, score2);
 });
 
@@ -83,23 +124,44 @@ paper.addEventListener("click", function(e){
 const scissors = document.createElement("button");
 scissors.textContent = "Scissors";
 scissors.addEventListener("click", function(e){
-    result = play("Scissors", computerInput());
-    scoreTracker.textContent = "User Score: " + score1 + "\n" + "Computer Score: " + score2;  
+    cInput = computerInput();
+    result = play("Scissors", cInput);
+    checkRoundWin(result);
+    scoreTracker.textContent = "User Score: " + score1 + "Computer Score: " + score2;  
     checkWin(score1, score2);
 });
-
 div.appendChild(rock);
 div.appendChild(paper);
 div.appendChild(scissors);
 
-const scoreTracker = document.querySelector("#score");
-const winner = document.createElement("p");
+let reset = document.createElement("button");
+reset.textContent = "Reset";
+reset.addEventListener("click", function(e){
+    score1 = 0; 
+    score2 = 0;
+    gameOver = false;
+    let gameText = document.querySelectorAll(".game-text");
+    gameText.forEach((text) => {
+        text.textContent = "";
+    })
+    rock.disabled = false;
+    paper.disabled = false;
+    scissors.disabled = false;
+});
+div.appendChild(reset);
 
-/*while(keepGoing){
-    if(score1 >= 5 || score2 >= 5){
-        console.log("someone won");
-    }
-}
+
+let scoreTracker = document.querySelector("#score");
+let matchup = document.createElement("p");
+matchup.setAttribute("class", "game-text");
+let matchWinner = document.createElement("p");
+matchWinner.setAttribute("class", "game-text");
+let outcome = document.createElement("p");
+outcome.setAttribute("class", "game-text");
+let winner = document.createElement("p");
+winner.setAttribute("class", "game-text");
+div.appendChild(winner);
+
 /*
 Copy your original code into a new file so you don’t lose it.
 For now, remove the logic that plays exactly five rounds.
